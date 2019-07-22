@@ -22,12 +22,6 @@ public class MainActivity extends AppCompatActivity {
         progressBar=findViewById(R.id.main_progressbar);
 
 
-        handler=new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                progressBar.setProgress(msg.arg1);
-            }
-        };
         thread=new Thread(runnable);
         thread.start();
     }
@@ -39,9 +33,13 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
 
             for(int i=0;i<100;i++){
-                Message message=Message.obtain();
-                message.arg1=i;
-                handler.sendMessage(message);
+                final int finalI = i;
+                MainActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progressBar.setProgress(finalI);
+                    }
+                });
 
                 try {
                     Thread.sleep(100);
